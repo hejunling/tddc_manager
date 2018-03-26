@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}TDDC-Task List{% endblock%}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>任务列表</h1>
+    <button type="button" class="btn btn-default">
+        <a href="{{ url_for('task.edit_task', tid='-1') }}">新增</a>
+    </button>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Platform</th>
+                <th>Feature</th>
+                <th>URL</th>
+                <th>Method</th>
+                <th>Space</th>
+                <th>Headers</th>
+                <th>Proxy</th>
+                <th>Valid</th>
+                <th>Timestamp</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        {% for task in task_list %}
+        <tbody>
+            <tr>
+                <td><a href="{{ url_for('task.edit_task', tid=task.id) }}">{{ task.id }}</td>
+                <td>{{ task.platform }}</td>
+                <td>{{ task.feature }}</td>
+                <td>{{ task.url }}</td>
+                <td>{{ task.method }}</td>
+                <td>{{ task.space }}</td>
+                <td>{{ task.headers }}</td>
+                <td>{{ task.proxy }}</td>
+                <td>{{ task.valid }}</td>
+                <td>{{ task.timestamp }}</td>
+                <td>
+                    <button type="button" class="btn btn-default">
+                        <a href="{{ url_for('task.edit_task', tid=task.id) }}">修改</a>
+                    </button>
+                    &nbsp;&nbsp;
+                    <button type="button" class="btn btn-warning">
+                        <a href="{{ url_for('task.delete_task', tid=task.id) }}">删除</a>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}TDDC-Modules File Edit{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>Modules File Edit</h2>
+    <span style="font-size: 20px;">File Name:</span>
+    <strong>{{ filename }}</strong>
+    <hr>
+    {{ wtf.quick_form(form) }}
+    <script src="http://ajaxorg.github.io/ace-builds/src/ace.js"></script>
+    <script>
+        function cerateEditor(name) {
+            var textarea = document.querySelector("form textarea[name=" + name + "]");
+            var editor = ace.edit();
+
+            var theme = "clouds"
+            var language = "python"
+            editor.setTheme("ace/theme/" + theme);
+            editor.session.setMode("ace/mode/" + language);
+            if (window.innerHeight)
+                winHeight = window.innerHeight;
+            else if ((document.body) && (document.body.clientHeight))
+                winHeight = document.body.clientHeight;
+            winHeight -= 100;
+            editor.container.style.height = winHeight.toString() + "px";
+            editor.session.setValue(textarea.value);
+
+            editor.setFontSize(12);
+            textarea.parentNode.insertBefore(editor.container, textarea);
+            textarea.style.display = "none";
+
+            editor.setReadOnly(false);
+
+            editor.setOption("wrap", "free")
+
+            ace.require("ace/ext/language_tools");
+            editor.setOptions({
+                enableBasicAutocompletion: true,
+                enableSnippets: true,
+                enableLiveAutocompletion: true
+            });
+            var form = textarea;
+            while (form && form.localName != "form") form = form.parentNode
+            form.addEventListener("submit", function() {
+                textarea.value = editor.getValue();
+            }, true)
+        }
+        cerateEditor('code_editor');
+
+    </script>
+</div>
+{% endblock %}

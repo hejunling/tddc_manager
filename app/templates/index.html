@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}TDDC{% endblock %}
+
+{% block head %}
+{{ super() }}
+<script src="{{ url_for('bootstrap.static', filename='jquery.js') }}"></script>
+<script src="{{ url_for('static', filename='js/echarts.js') }}"></script>
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>TDDC Manager 运行环境状态</h1>
+    <div id="cpu" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+    <div id="mem" style="height:500px;border:1px solid #ccc;padding:10px;"></div>
+
+    <script type="text/javascript">
+        var cpuChart = echarts.init(document.getElementById('cpu'));
+        cpuChart.setOption({
+            title: {text: 'CPU系统监控'}
+        });
+        var memChart = echarts.init(document.getElementById('mem'));
+        memChart.setOption({
+            title: {text: '内存系统监控'}
+        });
+
+        function fmtDate(ts){
+            var date =  new Date();
+            date.setTime(ts);
+            tm = date.getMonth().toString() + '/' + date.getDate().toString();
+            tm = tm + ' ' + date.getHours().toString() + ':' + date.getMinutes().toString();
+            return tm;
+        }
+
+        var update_mychart = function (data) {
+            if (typeof data == 'string') {
+                data = JSON.parse(data)
+            }
+            cpuChart.hideLoading();
+            memChart.hideLoading();
+            var last = data[data.length-1];
+            var cpu_count = last.cpu_count;
+            var options = [];
+            var legends = [];
+            var xAxis = [];
+            for (var j=0; j < cpu_count; j++) {
+                var series = {
+                    name: 'CPU' + j.toString(),
+                    type: 'line',
+                    itemStyle : {normal : {lineStyle:{width: 0.6}}},
+                    data: []
+                };
+                for (var i=0; i < data.length; i++) {
+                    series.data[i] = data[i].cpu_used_percent[j];
+                    xAxis[i] = fmtDate(data[i].timestamp * 1000);
+                }
+                options[j] = series;
+                legends[j] = series.name;
+            }
+            cpuChart.setOption({
+                tooltip: {},
+                title: {text: 'CPU系统监控'},
+                legend: {data:legends},
+                xAxis: {data: xAxis},
+                yAxis: {},
+                dataZoom: {data: [{type: 'slider', start: 10, end: 60}]},
+                series: options
+            });
+
+            var memTotal = data[0].mem_total;
+            var memSeries = {
+                name: '内存使用量(MB)',
+                type: 'line',
+                itemStyle : {normal : {areaStyle:{type: 'default', color: '#a9d3ef'}}},
+                data: []
+            };
+            for (var i=0; i < data.length; i++) {
+                memSeries.data[i] = (memTotal * (data[i].mem_used_percent / 100.0)) / 1024;
+            }
+            memChart.setOption({
+                tooltip: {},
+                title: {text: '内存系统监控'},
+                legend: {data:['内存使用量(MB)']},
+                xAxis: {data: xAxis},
+                yAxis: {},
+                dataZoom: {data: [{type: 'slider', start: 10, end: 60}]},
+                series: [memSeries]
+            });
+        };
+
+        cpuChart.showLoading();
+        memChart.showLoading();
+        $.get('/sys_res_used').done(update_mychart);
+
+        setInterval(function () {
+            $.ajax({
+                url:'/sys_res_used',
+                type:'POST',
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                jsonpCallback: 'update_mychart',
+                crossDomain: true,
+                data: JSON.stringify({"value": "xx"}),
+                success: update_mychart,
+                error: function () {
+
+                }});
+        }, 10000);
+
+    </script>
+</div>
+{% endblock %}

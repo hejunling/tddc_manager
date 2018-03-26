@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}TDDC-Client Monitor{% endblock %}
+
+{% block page_content %}
+{{ super() }}
+<div class="page-header">
+    <h2>状态列表</h2>
+    <hr>
+    {% for own, host_items in status.items() %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ own }}</h2>
+        </div>
+        <div class="panel-body">
+            {% for hostname, service_item in host_items.items() %}
+            <table class="table table-striped">
+                <caption style="font-size: 16px; color: #0077aa;">Host Name: [ {{ hostname }} ]</caption>
+                <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Last Time</th>
+                    </tr>
+                </thead>
+                {% for service, last_time in service_item.items() %}
+                <tbody>
+                    <tr>
+                        <td>{{ service }}</td>
+                        <td>{{ last_time }}</td>
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

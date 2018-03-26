@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}TDDC-Modules List{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>模块列表</h2>
+    <hr>
+    <button type="button" class="btn btn-default">
+        <a href="{{ url_for('modules.upload') }}">新增</a>
+    </button>
+    <hr>
+    {% for platform, items in modules.items() %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{{ platform }}</h2>
+        </div>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th class="panel-title">ID</th>
+                            <th class="panel-title">Own</th>
+                            <th class="panel-title">Platform</th>
+                            <th class="panel-title">Feature</th>
+                            <th class="panel-title">Package</th>
+                            <th class="panel-title">Mould</th>
+                            <th class="panel-title">Version</th>
+                            <!--<th class="panel-title">MD5</th>-->
+                            <th class="panel-title">Valid</th>
+                            <th class="panel-title">Timestamp</th>
+                            <th class="panel-title">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                <a href="{{ url_for('modules.edit_module', mid=item.id) }}">{{ item.id }}</a>
+                            </td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.own }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.platform }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.feature }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                <a href="{{ item.url }}">{{ item.package }}</a>
+                            </td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.mould }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.version }}</td>
+                            <!--<td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"></td>-->
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.valid }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ item.timestamp }}</td>
+                            <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                                <button type="button" class="btn btn-default">
+                                    <a href="{{ url_for('modules.edit_module', mid=item.id) }}">修改</a>
+                                </button>
+                                <button type="button" class="btn btn-success">
+                                    <a href="{{ url_for('modules.push_module', mid=item.id) }}">推送更新</a>
+                                </button>
+                                <button type="button" class="btn btn-danger" onclick="return delete_modules();">
+                                    <a href="{{ url_for('modules.delete_module', mid=item.id) }}">删除</a>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <script>
+                function delete_modules() {
+                    return confirm('确认要从集群中删除此模块吗？');
+                }
+            </script>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

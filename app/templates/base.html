@@ -1,0 +1,72 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{ super() }}
+<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon"/>
+<link rel="bookmark" href="/static/favicon.ico" type="image/x-icon"/>
+{% endblock %}
+
+{% block title %} TDDC {% endblock %}
+
+{% block navbar %}
+<div class="navbar-inverse" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">
+                <img alt="Brand" src="/static/virus.ico" width="65px" height="65px">
+            </a>
+            <button type="button" class="navbar-toggle"
+            data-toggle="collapse" data-target=". navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li role="presentation" {% if request.endpoint=="/" %}class="active"{% endif %}>
+                    <a href="/">Home</a>
+                </li>
+                <li role="presentation" {% if request.endpoint=="modules.modules_list" %}class="active"{% endif %}>
+                    <a href="{{ url_for('modules.modules_list') }}">Modules Manager</a>
+                </li>
+                <li role="presentation" {% if request.endpoint=="task.task_list" %}class="active"{% endif %}>
+                    <a href="{{ url_for('task.task_list') }}">Task Manager</a>
+                </li>
+                <li class="dropdown" role="presentation" {% if request.endpoint=="monitor.monitor_status" %}class="active"{% endif %}>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                      <i class="fa fa-fw fa-plus"></i>Monitor Manager<span class="caret"></span>
+                  </a>
+                  <ul class="dropdown-menu" role="menu">
+                      <li><a href="{{ url_for('monitor.client_status') }}">Client Status</a></li>
+                      <li><a href="{{ url_for('monitor.event_status') }}">Event Status</a></li>
+                      <li><a href="{{ url_for('monitor.task_status') }}">Task Status</a></li>
+                  </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li><a><i class="glyphicon glyphicon-user"></i> {{ current_user.username }}</a></li>
+                <li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li>
+                {% else %}
+                <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% block page_content %}
+    {% endblock %}
+</div>
+{% endblock %}

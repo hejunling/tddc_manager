@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}TDDC-Modules Update{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>上传模块</h1>
+    <div class="container">
+        <form method="POST" enctype="multipart/form-data">
+            {{ wtf.quick_form(file_select_form) }}
+        </form>
+    </div>
+    {% for error in file_select_form.errors %}
+        {{ error }}
+    {% endfor %}
+    <script>
+    function display() {
+        var files = document.getElementById('modules_file').files;
+        var filenames_lab = document.getElementById('files');
+        if (files == null | files.length == 0) {
+            alert("请选择文件！");
+        }
+        var names = '';
+        for (var i = 0; i < files.length; i++) {
+            var stuff = files[i].name.match(/^(.*)(\.)(.{1,8})$/)[3];
+            if (stuff != 'py') {
+                alert("文件类型错误：" + files[i].name);
+            }
+            names += ("File" + (i+1).toString() + ": " + files[i].name + "\t");
+        }
+        filenames_lab.value = names;
+    }
+</script>
+</div>
+{% endblock %}
