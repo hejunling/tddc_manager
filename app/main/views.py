@@ -7,10 +7,9 @@
 @file: views.py
 @time: 2018/3/20 17:55
 """
-from flask import render_template, request, redirect, url_for, json, jsonify
+from flask import render_template, request, json, jsonify
 from flask_login import login_required
 
-from app import csrf
 from app.main.helper import SystemResourceMonitor
 from . import main
 

@@ -9,12 +9,17 @@
 """
 
 import json
-import threading
+import logging
 import time
 import copy
+import gevent
 
-from util.redis_helper import StatusManager, RecordManager
+from tddc import StatusManager, RecordManager
+
 from util.util import Singleton
+
+
+log = logging.getLogger(__name__)
 
 
 class ClientStatus(object):
@@ -23,10 +28,11 @@ class ClientStatus(object):
 
     def __init__(self):
         super(ClientStatus, self).__init__()
-        print('Client Status Monitor Is Starting..')
+        log.info('Client Status Monitor Is Starting..')
         self.exception_server_backup = {}
-        threading.Thread(target=self._monitor).start()
-        print('Client Status Monitor Was ready.')
+        gevent.spawn(self._monitor)
+        gevent.sleep()
+        log.info('Client Status Monitor Was ready.')
 
     def _monitor(self):
         while True:
@@ -77,9 +83,10 @@ class EventStatusMonitor(object):
         '''
         self._status = {}
         super(EventStatusMonitor, self).__init__()
-        print('Event Status Monitor Is Starting.')
-        threading.Thread(target=self._monitor).start()
-        print('Event Status Monitor Was Started.')
+        log.info('Event Status Monitor Is Starting.')
+        gevent.spawn(self._monitor)
+        gevent.sleep()
+        log.info('Event Status Monitor Was Started.')
 
     @property
     def status(self):
@@ -90,7 +97,7 @@ class EventStatusMonitor(object):
             try:
                 keys = StatusManager().keys('tddc:event:status:*')
                 if not len(keys):
-                    time.sleep(30)
+                    gevent.sleep(30)
                     continue
                 platforms = [platform.split(':')[-1]
                              for platform in keys if len(platform.split(':')) == 4]
@@ -101,7 +108,7 @@ class EventStatusMonitor(object):
                                         for platform, ids in processing_event_ids.items()
                                         if len(ids)}
                 if not len(processing_event_ids):
-                    time.sleep(30)
+                    gevent.sleep(30)
                     continue
                 statuses = {platform: {event_id: StatusManager().hgetall(
                     'tddc:event:status:value:' + event_id)
@@ -113,7 +120,7 @@ class EventStatusMonitor(object):
                 self._done(result)
             except Exception as e:
                 print(e)
-            time.sleep(30)
+            gevent.sleep(30)
 
     def _status_check(self, statuses, alive_worker):
         cur_time = time.time()

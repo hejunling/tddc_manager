@@ -8,11 +8,11 @@
 @time: 2018/3/21 10:51
 """
 import time
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, redirect, url_for
 from flask_login import login_required
 
 from app import db
-from app.models import MainTask
+from .models import MainTask
 from app.task.forms import TaskForm
 from . import task
 

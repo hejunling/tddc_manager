@@ -11,12 +11,11 @@ from collections import defaultdict
 
 from flask import render_template, request, redirect, url_for, abort, flash
 from flask_login import login_required
-from werkzeug.datastructures import FileStorage
 
 from app import upload_set, db
-from app.models import Modules
-from app.modules.forms import FileSelectForm, FileEditForm
-from app.modules.helper import get_modules_info, EventPusher, push_update_event
+from .models import Modules
+from .forms import FileSelectForm, FileEditForm
+from .helper import get_modules_info, push_update_event
 from . import modules
 
 

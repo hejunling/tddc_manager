@@ -10,8 +10,6 @@
 
 import os
 
-from flask_uploads import AUDIO
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 

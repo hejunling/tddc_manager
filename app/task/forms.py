@@ -10,7 +10,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, SubmitField
-from wtforms.validators import Length, DataRequired, URL, NumberRange
+from wtforms.validators import Length, DataRequired, URL
 
 
 class TaskForm(FlaskForm):

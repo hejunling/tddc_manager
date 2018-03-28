@@ -7,13 +7,12 @@
 @file: authentication.py
 @time: 2018/3/19 10:02
 """
-from flask import jsonify, g, make_response, render_template, request, url_for, redirect, flash
+from flask import render_template, request, url_for, redirect, flash
 from flask_httpauth import HTTPBasicAuth
-from flask_login import login_user, current_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user
 
-from app.auth.forms import LoginForm
-from ..models import User
-
+from .forms import LoginForm
+from .models import User
 from . import auth
 
 basic_auth = HTTPBasicAuth()

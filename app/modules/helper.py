@@ -13,10 +13,10 @@ import re
 import time
 
 from flask import json
+from tddc import RedisClient
 
-from app.models import Modules
+from .models import Modules
 from client import app
-from util.redis_helper import RedisClient
 from util.short_uuid import ShortUUID
 from util.util import Singleton
 
@@ -72,6 +72,6 @@ def push_update_event(modules_info):
             'describe': 'Modules(%s|%s) Update Event.' % (topic, modules_info.platform),
             'event': modules_info.to_dict(),
             'id': event_id,
-            'cur_status': 0,
+            'status': 0,
             'timestamp': int(time.time())}
     EventPusher().publish_event(topic, json.dumps(data))
