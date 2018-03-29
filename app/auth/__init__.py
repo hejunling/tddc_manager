@@ -8,6 +8,10 @@
 @time: 2018/3/19 09:59
 """
 
+"""
+登录授权控制
+"""
+
 from flask import Blueprint
 
 auth = Blueprint('auth', __name__)

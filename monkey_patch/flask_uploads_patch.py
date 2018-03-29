@@ -17,11 +17,14 @@ from flask_uploads import UploadSet, extension, UploadNotAllowed
 
 def save(self, storage, folder=None, name=None):
     """
+    文件上传补丁：替换已存在文件
     This saves a `werkzeug.FileStorage` into this upload set. If the
     upload is not allowed, an `UploadNotAllowed` error will be raised.
     Otherwise, the file will be saved and its name (including the folder)
     will be returned.
 
+    :param self:
+    :return:
     :param storage: The uploaded file to save.
     :param folder: The subfolder within the upload set to save to.
     :param name: The name to save the file as. If it ends with a dot, the
