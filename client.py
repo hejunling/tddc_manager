@@ -19,8 +19,6 @@ from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell
 
 from app import create_app, db
-from app.auth.models import User
-from app.modules.models import Modules
 
 app = create_app(os.getenv('FLASK_CONFIG') or 'default')
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -32,6 +30,8 @@ log = logging.getLogger(__name__)
 
 
 def make_shell_context():
+    from app.auth.models import User
+    from app.modules.models import Modules
     return dict(db=db, User=User, Modules=Modules)
 
 

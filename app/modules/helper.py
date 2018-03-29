@@ -11,6 +11,7 @@ import hashlib
 import re
 
 import time
+from string import lower
 
 from flask import json
 from tddc import RedisClient
@@ -21,10 +22,9 @@ from util.short_uuid import ShortUUID
 from util.util import Singleton
 
 
-def get_modules_info(platform, filename, data):
+def get_modules_info(platform, filename, file_content):
     modules = Modules()
     modules.platform = platform
-    file_content = data.stream.getvalue()
     file_content = file_content.replace(' ', '')
     modules.package = filename.split('.')[0].split('/')[-1]
     ret = re.search(r'class(.*?)\(', file_content)
@@ -66,7 +66,7 @@ class EventPusher(RedisClient):
 
 def push_update_event(modules_info):
     event_id = ShortUUID.UUID()
-    topic = 'tddc:event:{own}'.format(own=modules_info.own)
+    topic = 'tddc:event:{own}'.format(own=lower(modules_info.own))
     data = {'e_type': 1001,
             'name': 'Modules Update',
             'describe': 'Modules(%s|%s) Update Event.' % (topic, modules_info.platform),

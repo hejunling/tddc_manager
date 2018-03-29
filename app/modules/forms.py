@@ -9,9 +9,9 @@
 """
 
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileAllowed, FileRequired
-from wtforms import StringField, BooleanField, SubmitField, FileField, SelectField, RadioField, TextAreaField
-from wtforms.validators import Length, DataRequired, URL, NumberRange, Required, Optional
+from flask_wtf.file import FileAllowed
+from wtforms import StringField, SubmitField, FileField, RadioField, TextAreaField
+from wtforms.validators import Length, DataRequired, Optional
 
 from app import upload_set
 
@@ -32,7 +32,7 @@ class FileSelectForm(FlaskForm):
                                   validators=[Optional()],
                                   choices=[('Crawler', 'Crawler'),
                                            ('Parser', 'Parser'),
-                                           ('Proxy Checker', 'Proxy Checker')],
+                                           ('Proxy Checker', 'Proxy')],
                                   default=1)
     platform = StringField(validators=[DataRequired(), Length(1, 32)],
                            render_kw={'class': 'input-lg'})

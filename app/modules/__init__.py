@@ -14,3 +14,4 @@ modules = Blueprint('modules', __name__)
 
 from . import views
 from . import models
+from . import forms

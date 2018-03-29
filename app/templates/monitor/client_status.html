@@ -14,7 +14,7 @@
         </div>
         <div class="panel-body">
             {% for hostname, service_item in host_items.items() %}
-            <table class="table table-striped">
+            <table class="table table-hover">
                 <caption style="font-size: 16px; color: #0077aa;">Host Name: [ {{ hostname }} ]</caption>
                 <thead>
                     <tr>
@@ -24,9 +24,9 @@
                 </thead>
                 {% for service, last_time in service_item.items() %}
                 <tbody>
-                    <tr>
+                    <tr class="{{ last_time[1] }}">
                         <td>{{ service }}</td>
-                        <td>{{ last_time }}</td>
+                        <td>{{ last_time[0] }}</td>
                     </tr>
                 </tbody>
                 {% endfor %}

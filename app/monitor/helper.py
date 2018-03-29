@@ -119,7 +119,8 @@ class EventStatusMonitor(object):
                 # self._alarm(result)
                 self._done(result)
             except Exception as e:
-                print(e)
+                log.exception(e)
+                log.warning(e)
             gevent.sleep(30)
 
     def _status_check(self, statuses, alive_worker):
@@ -130,7 +131,7 @@ class EventStatusMonitor(object):
                 event_record = RecordManager().get_record('tddc:event:record:%s' % platform,
                                                           event_id)
                 if not event_record:
-                    print('Event(%s) Record Not Found.' % event_id)
+                    log.warning('Event(%s) Record Not Found.' % event_id)
                     return result
                 event_record = type('EventRecord', (), json.loads(event_record))
                 if cur_time - event_record.timestamp < 60:

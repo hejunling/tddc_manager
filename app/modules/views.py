@@ -40,7 +40,7 @@ def upload():
         for _file in files:
             filename = upload_set.save(_file, name='{}/{}'.format(platform, _file.filename))
             file_url = upload_set.url(filename)
-            modules, msg = get_modules_info(platform, filename, _file)
+            modules, msg = get_modules_info(platform, filename, _file.stream.getvalue())
             if not modules:
                 flash(msg)
                 break
@@ -74,6 +74,13 @@ def edit_module(mid):
         with open('./PythonFiles/{}'.format(filename), 'w') as f:
             f.write(content.encode('utf-8'))
         upload_set.url(filename)
+        new_module = get_modules_info(modules.platform, filename, content.encode('utf-8'))[0]
+        new_module.id = modules.id
+        new_module.own = modules.own
+        new_module.url = modules.url
+        modules.update(new_module)
+        db.session.add(modules)
+        db.session.commit()
         flash(u'修改成功!')
         return redirect(url_for('modules.edit_module', mid=mid))
     if modules:

@@ -22,12 +22,19 @@ from . import monitor
 def client_status():
     status = ClientStatus().status
     result = defaultdict(dict)
+    cur_time = time.time()
     for k, v in status.items():
         own, hostname = k.split('|')
         for service, ts in v.items():
             time_array = time.localtime(ts)
             date = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
-            v[service] = date
+            if ts == -1:
+                bg = 'bg-danger'
+            elif cur_time - ts > 300:
+                bg = 'bg-warning'
+            else:
+                bg = 'bg-success'
+            v[service] = (date, bg)
         result[own][hostname] = v
     return render_template('monitor/client_status.html', status=result)
 

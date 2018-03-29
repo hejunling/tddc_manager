@@ -19,12 +19,8 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from .models import MainTask
 from app.task.models import TaskConfigModel
 
-logging.getLogger('sqlalchemy').setLevel(logging.WARN)
 logging.getLogger('PIL').setLevel(logging.WARN)
 from tddc import (Singleton, TaskManager, Task, TaskRecordManager)
-logging.getLogger('sqlalchemy').setLevel(logging.WARN)
-logging.getLogger('PIL').setLevel(logging.WARN)
-
 
 log = logging.getLogger(__name__)
 
@@ -66,7 +62,7 @@ class TaskCenter(object):
         tasks = self.session.query(MainTask).all()
         cur_time = int(time.time())
         for task in tasks:
-            if (cur_time - float(task.timestamp)) < float(task.space):
+            if not task.valid or ((cur_time - float(task.timestamp)) < float(task.space)):
                 continue
             task.timestamp = cur_time
             task.status = Task.Status.CrawlTopic
