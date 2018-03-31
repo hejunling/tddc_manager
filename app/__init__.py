@@ -64,4 +64,7 @@ def create_app(config_name):
     from .monitor import monitor as monitor_blueprint
     app.register_blueprint(monitor_blueprint, url_prefix='/monitor')
 
+    from .wedis import wedis as wedis_blueprint
+    app.register_blueprint(wedis_blueprint, url_prefix='/wedis')
+
     return app

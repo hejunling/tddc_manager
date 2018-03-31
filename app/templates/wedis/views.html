@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}TDDC-Redis Keys{% endblock %}
+
+{% block head %}
+{{ super()}}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- Required Stylesheets -->
+<link href="{{ url_for('bootstrap.static', filename='css/bootstrap.css') }}" rel="stylesheet">
+
+<!-- Required Javascript -->
+<script src="/static/js/jquery-2.1.0.min.js"></script>
+<script src="/static/js/bootstrap-treeview.js"></script>
+<style type="text/css">
+    .clearfloat {
+        clear:both;
+        height:0;
+        font-size: 1px;
+        line-height: 0px;
+    }
+    #crud {
+        position: absolute;
+        min-height: 0;
+        left: 300px;
+        right: 18px;
+        top: 0;
+        bottom: 0;
+        _height: 0;
+        height: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        outline: 0;
+        /*border: 1px solid #a0b3d6;*/
+        font-size: 12px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        _overflow-y: visible;
+    }
+    #crud-opt {
+        position: absolute;
+        min-height: 60px;
+        left: 0;
+        right: 0;
+        top: 0;
+        _height: 60px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        outline: 0;
+        /*border: 1px solid #a0b3d6;*/
+        font-size: 18px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        _overflow-y: visible;
+    }
+    #view {
+        position: absolute;
+        min-height: 0;
+        left: 0;
+        right: 18px;
+        top: 50px;
+        bottom: 0;
+        /*_height: 0;*/
+        height: 940px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        outline: 0;
+        border: 1px solid lightgray;
+        font-size: 14px;
+        word-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+        _overflow-y: visible;
+    }
+</style>
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h2>Redis Keys</h2>
+    <hr>
+    <div class="row" style="position: relative; min-height: 1000px;">
+        <div id="tree" class="col-lg-3"></div>
+        <div id="crud" class="col-lg-9">
+            <div id="crud-opt">
+                <input id="rds_cmd" type="text" style="width: 85%; top: 5px;" />
+                <input type="button" name="submit"
+                       value="提交" class="btn btn-warning" style="width: 10%;"
+                       onclick="rds_cmd();"/>
+            </div>
+            <div id="view" contenteditable="true">
+                <div class="clearfloat"></div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function rds_cmd() {
+            cmd = $('#rds_cmd').val()
+            $.get('/wedis/cmd', {command: cmd}).done(function (value) {
+                $('#view').text(JSON.stringify(value));
+            })
+        }
+    </script>
+    <script type="text/javascript">
+        var tree = $('#tree')
+
+        function update_keys(keys) {
+            tree.treeview({
+                data: keys,
+                onNodeSelected: function (event, data) {
+                    if (data.nodes) {
+                        return
+                    }
+                    var treeData = tree.data().treeview;
+                    var nodesText = new Array();
+                    while (data) {
+                        nodesText.push(data.text);
+                        if (data.nodeId == 0) {
+                            break
+                        }
+                        data = treeData.getNode(data.parentId);
+                    }
+                    nodesText = nodesText.reverse();
+                    nodesText = nodesText.join(':');
+                    $.get('/wedis/getKeyContent/' + encodeURI(nodesText)).done(function (value) {
+                        $('#view').text(JSON.stringify(value));
+                    });
+                }
+            });
+        }
+
+        $.get('/wedis/keys').done(update_keys);
+
+    </script>
+</div>
+{% endblock %}
+
+
+
+

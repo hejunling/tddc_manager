@@ -8,7 +8,8 @@
     <button type="button" class="btn btn-default">
         <a href="{{ url_for('task.edit_task', tid='-1') }}">新增</a>
     </button>
-    <table class="table table-striped">
+    <div class="table-responsive">
+        <table class="table table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -27,17 +28,19 @@
         {% for task in task_list %}
         <tbody>
             <tr>
-                <td><a href="{{ url_for('task.edit_task', tid=task.id) }}">{{ task.id }}</td>
-                <td>{{ task.platform }}</td>
-                <td>{{ task.feature }}</td>
-                <td>{{ task.url }}</td>
-                <td>{{ task.method }}</td>
-                <td>{{ task.space }}</td>
-                <td>{{ task.headers }}</td>
-                <td>{{ task.proxy }}</td>
-                <td>{{ task.valid }}</td>
-                <td>{{ task.timestamp }}</td>
-                <td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
+                    <a href="{{ url_for('task.edit_task', tid=task.id) }}">{{ task.id }}
+                </td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.platform }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.feature }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.url }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.method }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.space }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.headers }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.proxy }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.valid }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{ task.timestamp }}</td>
+                <td style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
                     <button type="button" class="btn btn-default">
                         <a href="{{ url_for('task.edit_task', tid=task.id) }}">修改</a>
                     </button>
@@ -50,5 +53,6 @@
         </tbody>
         {% endfor %}
     </table>
+    </div>
 </div>
 {% endblock %}

@@ -44,6 +44,9 @@
                       <li><a href="{{ url_for('monitor.task_status') }}">Task Status</a></li>
                   </ul>
                 </li>
+                <li role="presentation" {% if request.endpoint=="wedis.views" %}class="active"{% endif %}>
+                    <a href="{{ url_for('wedis.views') }}">Wedis</a>
+                </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.is_authenticated %}
