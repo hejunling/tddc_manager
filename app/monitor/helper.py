@@ -30,12 +30,14 @@ class ClientStatus(object):
         super(ClientStatus, self).__init__()
         log.info('Client Status Monitor Is Starting..')
         self.exception_server_backup = {}
+        self.server_status = {}
         gevent.spawn(self._monitor)
         gevent.sleep()
         log.info('Client Status Monitor Was ready.')
 
     def _monitor(self):
         while True:
+            self.server_status = {}
             exception_server = {}
             clients = StatusManager().smembers('tddc:client:alive')
             status = StatusManager().get_all_status('tddc:status:client')
@@ -44,11 +46,12 @@ class ClientStatus(object):
                 if client not in clients:
                     continue
                 state = json.loads(state)
+                self.server_status[client] = state
                 timeout = self._timeout_check(state, cur_time)
-                if timeout:
-                    exception_server[client] = timeout
-                elif self.exception_server_backup.get(client):
-                    del self.exception_server_backup[client]
+                # if timeout:
+                exception_server[client] = timeout
+                # elif self.exception_server_backup.get(client):
+                #     del self.exception_server_backup[client]
             for client, exception in exception_server.items():
                 if self.exception_server_backup.get(client) == exception:
                     continue
@@ -68,7 +71,7 @@ class ClientStatus(object):
 
     @property
     def status(self):
-        return self.exception_server_backup
+        return self.server_status
 
 
 class EventStatusMonitor(object):
